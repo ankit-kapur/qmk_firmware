@@ -127,9 +127,9 @@ bool encoder_update_kb(uint8_t index, bool clockwise) {
         return false;
     }
     if (clockwise) {
-        tap_code_delay(KC_VOLU, 10);
+        tap_code_delay(KC_F13, 10);
     } else {
-        tap_code_delay(KC_VOLD, 10);
+        tap_code_delay(KC_F14, 10);
     }
     return true;
 }
