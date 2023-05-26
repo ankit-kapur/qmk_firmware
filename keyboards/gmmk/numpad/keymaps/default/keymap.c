@@ -17,7 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 #include "analog.h"
-#include "qmk_midi.h"
+#include "joystick.h"
+
 
 // Tap Dance declarations
 enum {
@@ -71,16 +72,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 };
 
-// Potentiometer Slider, MIDI Control
-uint8_t divisor = 0;
+// Slider as joystick
+joystick_config_t joystick_axes[JOYSTICK_AXIS_COUNT] = {
+    JOYSTICK_AXIS_VIRTUAL,
+};
 
+// NOTE: For rescale parameter 0x7C, minimum and maximum values for 'slider_value' are -115 and 119 respectively.
+#define RESCALE_PARAM	0x7C
+uint8_t divisor = 0;
 void slider(void) {
     if (divisor++) { /* only run the slider function 1/256 times it's called */
         return;
     }
-    midi_send_cc(&midi_device, 2, 0x3E, 0x7F + (analogReadPin(SLIDER_PIN) >> 3));
-}
 
+    int8_t slider_value = ((RESCALE_PARAM - (analogReadPin(SLIDER_PIN) >> 3)) << 1) - 0x7F;
+    joystick_set_axis(0, slider_value);
+}
+    
 void housekeeping_task_user(void) {
     slider();
 }
+

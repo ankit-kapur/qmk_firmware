@@ -85,3 +85,10 @@
 
 #define TAPPING_TERM	175
 #define TAPPING_TERM_PER_KEY
+
+// Min 0, max 32
+#define JOYSTICK_BUTTON_COUNT 0
+// Min 0, max 6: X, Y, Z, Rx, Ry, Rz
+#define JOYSTICK_AXIS_COUNT 1
+// Min 8, max 16
+#define JOYSTICK_AXIS_RESOLUTION 8
