@@ -24,6 +24,8 @@
 /* Locking resynchronize hack */
 #define LOCKING_RESYNC_ENABLE
 
+#define ENCODER_DEFAULT_POS 0x3
+
 /* SPI Config for spi flash*/
 #define SPI_DRIVER SPIDQ
 #define SPI_SCK_PIN B3
@@ -51,7 +53,5 @@
 #define RGB_MATRIX_KEYPRESSES
 #define RGB_MATRIX_KEYRELEASES
 
-#define ENCODER_MAP_KEY_DELAY 10
-
-#define TAPPING_TERM	175
+#define TAPPING_TERM            200
 #define TAPPING_TERM_PER_KEY

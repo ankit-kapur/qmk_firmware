@@ -123,14 +123,12 @@ void keyboard_pre_init_user(void) {
 
 #ifdef ENCODER_ENABLE
 bool encoder_update_kb(uint8_t index, bool clockwise) {
-    if (!encoder_update_user(index, clockwise)) {
+    if (!encoder_update_user(index, clockwise))
         return false;
-    }
-    if (clockwise) {
-        tap_code_delay(KC_F13, 10);
-    } else {
-        tap_code_delay(KC_F14, 10);
-    }
+
+    // We use Page Up/Down for encoders because F13-24 are NOT widely supported
+    tap_code_delay((clockwise ? KC_PGDN : KC_PGUP), 10);
+
     return true;
 }
 #endif
