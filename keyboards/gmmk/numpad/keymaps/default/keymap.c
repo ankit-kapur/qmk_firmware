@@ -22,33 +22,131 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Tap Dance declarations
 enum {
-    TD_NUM_CALC = 0,
-    TD_SLS_LPRN,
-    TD_AST_RPRN,
-    TD_MNS_ESC,
-    TD_PLS_DEL
+    TD_NUM_KEY = 0,
+    TD_SLASH_KEY,
+    TD_SLASH_KEY_LAYER_2,
+    TD_ASTERISK_KEY,
+    TD_ASTERISK_KEY_LAYER_2,
+    TD_MINUS_KEY,
+    TD_MINUS_KEY_LAYER_2,
+    TD_PLUS_KEY,
+    TD_PLUS_KEY_LAYER_2,
+    TD_ROTARY_BUTTON,
+    TD_KC_P0,
+    TD_KC_P0_LAYER_2,
+    TD_KC_P1,
+    TD_KC_P1_LAYER_2,
+    TD_KC_P2,
+    TD_KC_P2_LAYER_2,
+    TD_KC_P3,
+    TD_KC_P3_LAYER_2,
+    TD_KC_P4,
+    TD_KC_P5,
+    TD_KC_P6,
+    TD_KC_P7,
+    TD_KC_P8,
+    TD_KC_P9,
+    TD_ENTER_KEY,
+    TD_ENTER_KEY_LAYER_2,
+    TD_DOT_KEY,
+    TD_DOT_KEY_LAYER_2,
+    TD_ROTARY_BUTTON_LAYER_2,
 };
 
-// Tap Dance definitions
+// Tap Dance (TD) definitions
 tap_dance_action_t tap_dance_actions[] = {
     // Tap once for 'NUMS LOCK Toggle', twice for 'Calculator'
-    [TD_NUM_CALC] = ACTION_TAP_DANCE_DOUBLE(KC_NUM, KC_CALC),
+    [TD_NUM_KEY] = ACTION_TAP_DANCE_DOUBLE(MO(1), KC_CALC),
 
-    // Tap once for '/', twice for '('
-    [TD_SLS_LPRN] = ACTION_TAP_DANCE_DOUBLE(KC_PSLS, KC_LPRN),
+    [TD_SLASH_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PSLS, KC_P),
+    [TD_SLASH_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_X, KC_F1),
+    
+    [TD_ASTERISK_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PAST, KC_O),
+    [TD_ASTERISK_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_Y, KC_F2),
 
-    // Tap once for '*', twice for ')'
-    [TD_AST_RPRN] = ACTION_TAP_DANCE_DOUBLE(KC_PAST, KC_RPRN),
+    [TD_MINUS_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PMNS, KC_N),
+    [TD_MINUS_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_Z, KC_F3),
 
-    // Tap once for '-', twice for 'Escape' (used to Clear All in Calculator)
-    [TD_MNS_ESC] = ACTION_TAP_DANCE_DOUBLE(KC_PMNS, KC_ESC),
+    [TD_PLUS_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PLUS, KC_M),
+    [TD_PLUS_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_AT, KC_HASH),
 
-    // Tap once for '+', twice for 'Delete' (used to Clear Entry in Calculator)
-    [TD_PLS_DEL] = ACTION_TAP_DANCE_DOUBLE(KC_PPLS, KC_DEL)
+    [TD_ROTARY_BUTTON] = ACTION_TAP_DANCE_DOUBLE(KC_Q, KC_R),
+    [TD_ROTARY_BUTTON_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_S, KC_T),
+
+    // Media: Previous, Play/Pause, Next
+    [TD_KC_P0] = ACTION_TAP_DANCE_DOUBLE(KC_P0, KC_A),
+    [TD_KC_P0_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_F4),
+
+    [TD_KC_P1] = ACTION_TAP_DANCE_DOUBLE(KC_P1, KC_B),
+    [TD_KC_P2] = ACTION_TAP_DANCE_DOUBLE(KC_P2, KC_C),
+    [TD_KC_P3] = ACTION_TAP_DANCE_DOUBLE(KC_P3, KC_D),
+
+    [TD_KC_P4] = ACTION_TAP_DANCE_DOUBLE(KC_P4, KC_E),
+    [TD_KC_P5] = ACTION_TAP_DANCE_DOUBLE(KC_P5, KC_F),
+    [TD_KC_P6] = ACTION_TAP_DANCE_DOUBLE(KC_P6, KC_G),
+
+    [TD_KC_P7] = ACTION_TAP_DANCE_DOUBLE(KC_P7, KC_H),
+    [TD_KC_P8] = ACTION_TAP_DANCE_DOUBLE(KC_P8, KC_I),
+    [TD_KC_P9] = ACTION_TAP_DANCE_DOUBLE(KC_P9, KC_J),
+
+    [TD_ENTER_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_ENTER, KC_K),
+    [TD_ENTER_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_V, KC_W),
+
+    [TD_DOT_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PDOT, KC_L),
+    [TD_DOT_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_TILD, KC_EXCLAIM),
+
+    [TD_KC_P1_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_SEMICOLON, KC_DOLLAR),
+    [TD_KC_P2_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_CIRC, KC_PERCENT),
+    [TD_KC_P3_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_AMPERSAND, KC_ASTERISK)
+    
 };
+
+// ------------------------------------------------ Original
+// Source: https://github.com/GloriousThrall/qmk_firmware/blob/gmmk_numpad/keyboards/gmmk/numpad/keymaps/default/keymap.c
+
+//      NUM      /       *       -
+//      7        8       9       +
+//      4        5       6       CALC
+//      1        2       3       RET
+//      0                        .
+
+//   [0] = LAYOUT(
+//     MO(1),   KC_PSLS,   KC_PAST,   KC_PMNS,
+//     KC_P7,   KC_P8,     KC_P9,     KC_PPLS,
+//     KC_P4,   KC_P5,     KC_P6,     KC_CALC,
+//     KC_P1,   KC_P2,     KC_P3,     KC_PENT,
+//     KC_P0,                         KC_PDOT
+//   ),
+//   [1] = LAYOUT(
+//     _______,   KC_PSLS,   KC_PAST,   KC_PMNS,
+//     KC_P7,     RGB_VAI,   KC_P9,     KC_PPLS,
+//     RGB_RMOD,  KC_P5,     RGB_MOD,   KC_CALC,
+//     KC_P1,     RGB_VAD,   KC_P3,     KC_PENT,
+//     RGB_TOG,                         QK_BOOT
+//   )
+// };
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+
+
+[0] = LAYOUT(
+    MO(1),             TD(TD_SLASH_KEY),  TD(TD_ASTERISK_KEY),   TD(TD_MINUS_KEY),
+    TD(TD_KC_P7),      TD(TD_KC_P8),      TD(TD_KC_P9),          TD(TD_PLUS_KEY),
+    TD(TD_KC_P4),      TD(TD_KC_P5),      TD(TD_KC_P6),          TD(TD_ROTARY_BUTTON),
+    TD(TD_KC_P1),      TD(TD_KC_P2),      TD(TD_KC_P3),          TD(TD_ENTER_KEY),
+    TD(TD_KC_P0),                                                TD(TD_DOT_KEY)
+  ),
+
+  [1] = LAYOUT(
+    _______,   TD(TD_SLASH_KEY_LAYER_2),  TD(TD_ASTERISK_KEY_LAYER_2),   TD(TD_MINUS_KEY_LAYER_2),
+    RGB_VAI,  RGB_SPI,   RGB_SAI,   TD(TD_PLUS_KEY_LAYER_2),
+    RGB_MOD, RGB_TOG, RGB_HUI,   TD(TD_ROTARY_BUTTON_LAYER_2),
+    TD(TD_KC_P1_LAYER_2),  TD(TD_KC_P2_LAYER_2), TD(TD_KC_P3_LAYER_2),   TD(TD_ENTER_KEY_LAYER_2),
+    TD(TD_KC_P0_LAYER_2),                        TD(TD_DOT_KEY_LAYER_2)
+  )
+
+// ------------------- Backup 6 pm
 
 //      NUM or CALC      / or (       * or )      - or C
 //      7                8            9           + or CE
@@ -56,13 +154,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //      1                2            3           Enter
 //      0                                         .
 
-  [0] = LAYOUT(
-    TD(TD_NUM_CALC),   TD(TD_SLS_LPRN),   TD(TD_AST_RPRN),   TD(TD_MNS_ESC),
-    KC_P7,             KC_P8,             KC_P9,             TD(TD_PLS_DEL),
-    KC_P4,             KC_P5,             KC_P6,             MO(1),
-    KC_P1,             KC_P2,             KC_P3,             KC_PENT,
-    KC_P0,                                                   KC_PDOT
-  ),
+  // [0] = LAYOUT(
+  //   TD(TD_NUM_KEY),   TD(TD_SLASH_KEY),   TD(TD_ASTERISK_KEY),   TD(TD_MINUS_KEY),
+  //   KC_P7,             KC_P8,             KC_P9,                 TD(TD_PLUS_KEY),
+  //   KC_P4,             KC_P5,             KC_P6,                 MO(1),
+  //   KC_P1,             KC_P2,             KC_P3,                 KC_PENT,
+  //   KC_P0,                                                       KC_PDOT
+  // ),
 
 //  SYS_POWEROFF  MEDIA_PREV   MEDIA_NEXT   MEDIA_PLAY_PAUSE
 //  RGB_HUE+      RGB_BRIGHT+  RGB_SAT+     MEDIA_STOP
@@ -70,13 +168,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  RGB_HUE-      RGB_BRIGHT-  RGB_SAT-     MEDIA_PLAYER
 //  SYS_SLEEP                               KBD_BOOTLD_MODE
 
-  [1] = LAYOUT(
-    KC_PWR,   KC_MPRV,   KC_MNXT,   KC_MPLY,
-    RGB_HUI,  RGB_VAI,   RGB_SAI,   KC_MSTP,
-    RGB_RMOD, RGB_TOG,   RGB_MOD,   _______,
-    RGB_HUD,  RGB_VAD,   RGB_SAD,   KC_MSEL,
-    KC_SLEP,                        QK_BOOT
-  )
+  // [1] = LAYOUT(
+  //   KC_PWR,   KC_MPRV,   KC_MNXT,   KC_MPLY,
+  //   RGB_HUI,  RGB_VAI,   RGB_SAI,   KC_MSTP,
+  //   RGB_RMOD, RGB_TOG,   RGB_MOD,   _______,
+  //   RGB_HUD,  RGB_VAD,   RGB_SAD,   KC_MSEL,
+  //   KC_SLEP,                        QK_BOOT
+  // )
 };
 
 // Slider as joystick
@@ -95,12 +193,18 @@ void slider(void) {
         return;
     }
 
-    // We maintain a rolling average to reduce jitter
-    slider_reading = (slider_reading >> 1) + (int8_t)(analogReadPin(SLIDER_PIN) >> 4);
+    // Idea for how this could work. 
+    //      if slider_reading has gone up or down (store prev value and compare),
+    //      then send KC_VOL_UP/DOWN keystroke.
 
-    int8_t slider_value = ((RESCALE_PARAM - slider_reading) << 1) - 0x7F;
+    // DOESN'T WORK. 
+    // midi_send_cc(&midi_device, 2, 0x3E, 0x7F + (analogReadPin(SLIDER_PIN) >> 3));
 
-    joystick_set_axis(0, slider_value);
+    // ----------- Joystick thing ---- 
+    // // We maintain a rolling average to reduce jitter
+    // slider_reading = (slider_reading >> 1) + (int8_t)(analogReadPin(SLIDER_PIN) >> 4);
+    // int8_t slider_value = ((RESCALE_PARAM - slider_reading) << 1) - 0x7F;
+    // joystick_set_axis(0, slider_value);
 }
 
 void keyboard_post_init_user(void) {
