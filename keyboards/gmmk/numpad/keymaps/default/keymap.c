@@ -18,7 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include "analog.h"
 #include "joystick.h"
-
+#include "print.h"
+#include "inttypes.h"
+#include "stdint.h"
+#include "stdio.h"
 
 // Tap Dance declarations
 enum {
@@ -65,7 +68,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_ASTERISK_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_Y, KC_F2),
 
     [TD_MINUS_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PMNS, KC_N),
-    [TD_MINUS_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_Z, KC_F3),
+    [TD_MINUS_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_Z, KC_F5),
 
     [TD_PLUS_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PLUS, KC_M),
     [TD_PLUS_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_AT, KC_HASH),
@@ -185,7 +188,8 @@ joystick_config_t joystick_axes[JOYSTICK_AXIS_COUNT] = {
 // NOTE: For rescale parameter 0x7C, minimum and maximum values for 'slider_value' are -115 and 119 respectively.
 // We let calibration software on the host to rescale them perfectly to [-127, 127].
 #define RESCALE_PARAM		0x7C
-int8_t slider_reading;
+int8_t prev_slider_reading = 0;
+int8_t prev_slider_value = 0;
 uint8_t divisor = 0;
 
 void slider(void) {
@@ -193,23 +197,41 @@ void slider(void) {
         return;
     }
 
-    // Idea for how this could work. 
+    // How this works:
     //      if slider_reading has gone up or down (store prev value and compare),
     //      then send KC_VOL_UP/DOWN keystroke.
 
-    // DOESN'T WORK. 
-    // midi_send_cc(&midi_device, 2, 0x3E, 0x7F + (analogReadPin(SLIDER_PIN) >> 3));
-
-    // ----------- Joystick thing ---- 
     // // We maintain a rolling average to reduce jitter
-    // slider_reading = (slider_reading >> 1) + (int8_t)(analogReadPin(SLIDER_PIN) >> 4);
-    // int8_t slider_value = ((RESCALE_PARAM - slider_reading) << 1) - 0x7F;
-    // joystick_set_axis(0, slider_value);
-}
+    int8_t slider_reading = (slider_reading >> 1) + (int8_t)(analogReadPin(SLIDER_PIN) >> 4);
+    int8_t slider_value = ((RESCALE_PARAM - slider_reading) << 1) - 0x7F;
 
-void keyboard_post_init_user(void) {
-    // NOTE: Raw 'SLIDER_PIN' value is in the range [8, 936]
-    slider_reading = (int8_t)(analogReadPin(SLIDER_PIN) >> 3);
+    // printf("VALUES ===> slider_value = %d, prev_slider_value = %d \n", 
+    //     slider_value, prev_slider_value);
+
+    if (slider_value < prev_slider_value) {
+
+        printf("READING ===> %d;\tPREV ===> = %d\n", slider_reading, prev_slider_reading);
+        printf("VALUE ===> %d;\tPREV ===> = %d\n", slider_value, prev_slider_value);
+
+        tap_code_delay(KC_VOLU, 1);
+
+        print("VOLUME INCREASEDDDDDDDD! \n");
+    } else if (slider_value > prev_slider_value) {
+    
+        printf("READING ===> %d;\tPREV ===> = %d\n", slider_reading, prev_slider_reading);
+        printf("VALUE ===> %d;\tPREV ===> = %d\n", slider_value, prev_slider_value);
+
+        tap_code_delay(KC_VOLD, 1);
+
+        print("VOLUME REDUCED! \n");
+    } else {
+        // else do nothing
+        // print("NO CHANGE IN VOLUME.\n");
+    }
+
+    
+    prev_slider_value = slider_value;
+    prev_slider_reading = slider_reading;
 }
     
 void housekeeping_task_user(void) {
