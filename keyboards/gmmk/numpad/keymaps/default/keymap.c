@@ -17,11 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 #include "analog.h"
-#include "joystick.h"
-#include "print.h"
-#include "inttypes.h"
-#include "stdint.h"
-#include "stdio.h"
+// #include "joystick.h"
+// #include "print.h"
+// #include "inttypes.h"
+// #include "stdint.h"
+// #include "stdio.h"
+
+// For Windows set to 1, For Mac set to 4
+const int8_t VOLUME_SCALING_FACTOR = 5;
 
 // Tap Dance declarations
 enum {
@@ -58,9 +61,6 @@ enum {
 
 // Tap Dance (TD) definitions
 tap_dance_action_t tap_dance_actions[] = {
-    // Tap once for 'NUMS LOCK Toggle', twice for 'Calculator'
-    [TD_NUM_KEY] = ACTION_TAP_DANCE_DOUBLE(MO(1), KC_CALC),
-
     [TD_SLASH_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PSLS, KC_P),
     [TD_SLASH_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_X, KC_F1),
     
@@ -70,8 +70,8 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_MINUS_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PMNS, KC_N),
     [TD_MINUS_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_Z, KC_F5),
 
-    [TD_PLUS_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PLUS, KC_M),
-    [TD_PLUS_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_AT, KC_HASH),
+    [TD_PLUS_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PPLS, KC_M),
+    [TD_PLUS_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_SEPARATOR, KC_CONTROL_PANEL),
 
     [TD_ROTARY_BUTTON] = ACTION_TAP_DANCE_DOUBLE(KC_Q, KC_R),
     [TD_ROTARY_BUTTON_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_S, KC_T),
@@ -81,8 +81,11 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_KC_P0_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_F4),
 
     [TD_KC_P1] = ACTION_TAP_DANCE_DOUBLE(KC_P1, KC_B),
+    [TD_KC_P1_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_SEMICOLON, KC_ASSISTANT),
     [TD_KC_P2] = ACTION_TAP_DANCE_DOUBLE(KC_P2, KC_C),
+    [TD_KC_P2_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_COMMA, KC_KP_EQUAL),
     [TD_KC_P3] = ACTION_TAP_DANCE_DOUBLE(KC_P3, KC_D),
+    [TD_KC_P3_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_DEL, KC_BACKSPACE),
 
     [TD_KC_P4] = ACTION_TAP_DANCE_DOUBLE(KC_P4, KC_E),
     [TD_KC_P5] = ACTION_TAP_DANCE_DOUBLE(KC_P5, KC_F),
@@ -96,11 +99,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_ENTER_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_V, KC_W),
 
     [TD_DOT_KEY] = ACTION_TAP_DANCE_DOUBLE(KC_PDOT, KC_L),
-    [TD_DOT_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_TILD, KC_EXCLAIM),
-
-    [TD_KC_P1_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_SEMICOLON, KC_DOLLAR),
-    [TD_KC_P2_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_CIRC, KC_PERCENT),
-    [TD_KC_P3_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_AMPERSAND, KC_ASTERISK)
+    [TD_DOT_KEY_LAYER_2] = ACTION_TAP_DANCE_DOUBLE(KC_BRIGHTNESS_UP, KC_BRIGHTNESS_DOWN)
     
 };
 
@@ -142,96 +141,50 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
   [1] = LAYOUT(
-    _______,   TD(TD_SLASH_KEY_LAYER_2),  TD(TD_ASTERISK_KEY_LAYER_2),   TD(TD_MINUS_KEY_LAYER_2),
-    RGB_VAI,  RGB_SPI,   RGB_SAI,   TD(TD_PLUS_KEY_LAYER_2),
-    RGB_MOD, RGB_TOG, RGB_HUI,   TD(TD_ROTARY_BUTTON_LAYER_2),
-    TD(TD_KC_P1_LAYER_2),  TD(TD_KC_P2_LAYER_2), TD(TD_KC_P3_LAYER_2),   TD(TD_ENTER_KEY_LAYER_2),
-    TD(TD_KC_P0_LAYER_2),                        TD(TD_DOT_KEY_LAYER_2)
+    _______,                TD(TD_SLASH_KEY_LAYER_2),   TD(TD_ASTERISK_KEY_LAYER_2),    TD(TD_MINUS_KEY_LAYER_2),
+    RGB_VAI,                RGB_SPI,                    RGB_SAI,                        TD(TD_PLUS_KEY_LAYER_2),
+    RGB_MOD,                RGB_TOG,                    RGB_HUI,                        TD(TD_ROTARY_BUTTON_LAYER_2),
+    TD(TD_KC_P1_LAYER_2),   TD(TD_KC_P2_LAYER_2),       TD(TD_KC_P3_LAYER_2),           TD(TD_ENTER_KEY_LAYER_2),
+    TD(TD_KC_P0_LAYER_2),                                                               TD(TD_DOT_KEY_LAYER_2)
   )
-
-// ------------------- Backup 6 pm
-
-//      NUM or CALC      / or (       * or )      - or C
-//      7                8            9           + or CE
-//      4                5            6           Encoder button as MO Switch
-//      1                2            3           Enter
-//      0                                         .
-
-  // [0] = LAYOUT(
-  //   TD(TD_NUM_KEY),   TD(TD_SLASH_KEY),   TD(TD_ASTERISK_KEY),   TD(TD_MINUS_KEY),
-  //   KC_P7,             KC_P8,             KC_P9,                 TD(TD_PLUS_KEY),
-  //   KC_P4,             KC_P5,             KC_P6,                 MO(1),
-  //   KC_P1,             KC_P2,             KC_P3,                 KC_PENT,
-  //   KC_P0,                                                       KC_PDOT
-  // ),
-
-//  SYS_POWEROFF  MEDIA_PREV   MEDIA_NEXT   MEDIA_PLAY_PAUSE
-//  RGB_HUE+      RGB_BRIGHT+  RGB_SAT+     MEDIA_STOP
-//  <RGB_MODE     RGB_TOGGLE   RGB_MODE>    ____________
-//  RGB_HUE-      RGB_BRIGHT-  RGB_SAT-     MEDIA_PLAYER
-//  SYS_SLEEP                               KBD_BOOTLD_MODE
-
-  // [1] = LAYOUT(
-  //   KC_PWR,   KC_MPRV,   KC_MNXT,   KC_MPLY,
-  //   RGB_HUI,  RGB_VAI,   RGB_SAI,   KC_MSTP,
-  //   RGB_RMOD, RGB_TOG,   RGB_MOD,   _______,
-  //   RGB_HUD,  RGB_VAD,   RGB_SAD,   KC_MSEL,
-  //   KC_SLEP,                        QK_BOOT
-  // )
 };
 
-// Slider as joystick
-joystick_config_t joystick_axes[JOYSTICK_AXIS_COUNT] = {
-    JOYSTICK_AXIS_VIRTUAL,
-};
-
-// NOTE: For rescale parameter 0x7C, minimum and maximum values for 'slider_value' are -115 and 119 respectively.
-// We let calibration software on the host to rescale them perfectly to [-127, 127].
-#define RESCALE_PARAM		0x7C
-int8_t prev_slider_reading = 0;
-int8_t prev_slider_value = 0;
+int8_t prev_set_slider_reading = 0;
 uint8_t divisor = 0;
 
+// How this works:
+//      if slider_reading has gone up or down, (we're store prev value and comparing),
+//      then send KC_VOL_UP/DOWN keystrokes. No. of strokes depends on delta and scaling factor.
 void slider(void) {
     if (divisor++) { /* only run the slider function 1/256 times it's called */
         return;
     }
 
-    // How this works:
-    //      if slider_reading has gone up or down (store prev value and compare),
-    //      then send KC_VOL_UP/DOWN keystroke.
-
-    // // We maintain a rolling average to reduce jitter
+    // Get current value of slider.
     int8_t slider_reading = (slider_reading >> 1) + (int8_t)(analogReadPin(SLIDER_PIN) >> 4);
-    int8_t slider_value = ((RESCALE_PARAM - slider_reading) << 1) - 0x7F;
 
-    // printf("VALUES ===> slider_value = %d, prev_slider_value = %d \n", 
-    //     slider_value, prev_slider_value);
+    // Diff from prev-reading tells us how much change has happened.
+    int8_t delta = abs(slider_reading - prev_set_slider_reading);
 
-    if (slider_value < prev_slider_value) {
-
-        printf("READING ===> %d;\tPREV ===> = %d\n", slider_reading, prev_slider_reading);
-        printf("VALUE ===> %d;\tPREV ===> = %d\n", slider_value, prev_slider_value);
-
-        tap_code_delay(KC_VOLU, 1);
-
-        print("VOLUME INCREASEDDDDDDDD! \n");
-    } else if (slider_value > prev_slider_value) {
+    // Ignore changes that are too small.
+    if (delta < VOLUME_SCALING_FACTOR)
+        return;
     
-        printf("READING ===> %d;\tPREV ===> = %d\n", slider_reading, prev_slider_reading);
-        printf("VALUE ===> %d;\tPREV ===> = %d\n", slider_value, prev_slider_value);
+    // How many VOL UP/DOWN signals to send.
+    int8_t signal_count = 1 + (delta / VOLUME_SCALING_FACTOR);
 
-        tap_code_delay(KC_VOLD, 1);
+    if (slider_reading < prev_set_slider_reading) {
+        for (int8_t i = 0; i < signal_count; i++) {
+            tap_code(KC_VOLD);
+        }
+        prev_set_slider_reading = slider_reading;
 
-        print("VOLUME REDUCED! \n");
-    } else {
-        // else do nothing
-        // print("NO CHANGE IN VOLUME.\n");
+    } else if (slider_reading > prev_set_slider_reading) {
+        for (int8_t i = 0; i < signal_count; i++) {
+            tap_code(KC_VOLU);
+        }
+        prev_set_slider_reading = slider_reading;
     }
-
-    
-    prev_slider_value = slider_value;
-    prev_slider_reading = slider_reading;
 }
     
 void housekeeping_task_user(void) {

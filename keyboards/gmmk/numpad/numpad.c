@@ -16,6 +16,12 @@
  */
 
 #include "quantum.h"
+// #include "numpad.h"
+
+#include "print.h"
+#include "inttypes.h"
+#include "stdint.h"
+#include "stdio.h"
 
 #ifdef RGB_MATRIX_ENABLE
 
@@ -126,9 +132,18 @@ bool encoder_update_kb(uint8_t index, bool clockwise) {
     if (!encoder_update_user(index, clockwise))
         return false;
 
-    // We use Page Up/Down for encoders because F13-24 are NOT widely supported
-    tap_code_delay((clockwise ? KC_PGDN : KC_PGUP), 10);
-
+    if (IS_LAYER_ON(1)) {
+        if (get_mods() & MOD_BIT(KC_LSFT)) {
+            // with SHIFT
+            tap_code(clockwise ? KC_F4 : KC_WHOM);
+        } else {
+            // Just the encoder
+            tap_code(clockwise ? KC_GRAVE : KC_QUOTE);
+        }
+    } else {
+        // just the encoder.
+        tap_code(clockwise ? KC_PGDN : KC_PGUP);
+    }
     return true;
 }
 #endif
